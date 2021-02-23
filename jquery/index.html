@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <link rel='stylesheet' href='https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css'><script src='https://code.jquery.com/jquery-1.12.4.js'></script><script src='https://code.jquery.com/ui/1.12.1/jquery-ui.js'></script>
+    <title>Select color</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: serif;
+            line-height: 1.5;
+        }
+
+        .main {
+            max-width: 960px;
+            box-sizing: content-box;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .section {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+        }
+
+        .section__sliderContainer {
+            display: flex;
+            flex-direction: column;
+            margin-right: 15px;
+            width: 45%;
+        }
+
+        label {
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        label + label {
+            margin-left: 15px;
+        }
+
+        input[type=checkbox] {
+            position: absolute;
+            -webkit-appearance: none;
+        }
+
+        input[type=checkbox] + span {
+            padding: 8px;
+            border: 1px #CCC solid;
+            border-radius: 8px;
+        }
+
+        input[type=checkbox]:checked + span {
+            background-color: #0069D9;
+            color: #FFF;
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            border: 1px solid transparent;
+            height: 20px;
+            width: 20px;
+            margin-top: -3px;
+            border-radius: 3px;
+            background: #ffffff;
+            cursor: pointer;
+        }
+
+        input[data-color='green']::-webkit-slider-thumb {
+            border-color: green;
+        }
+
+        input[data-color='green'] {
+            background: linear-gradient(90deg, green 100%, #FFF 60%);
+        }
+
+        input[data-color='blue']::-webkit-slider-thumb {
+            border-color: blue;
+        }
+
+        input[data-color='blue'] {
+            background: linear-gradient(90deg, blue 100%, #FFF 60%);
+        }
+
+        input[data-color='red']::-webkit-slider-thumb {
+            border-color: red;
+        }
+
+        input[data-color='red'] {
+            background: linear-gradient(90deg, red 100%, #FFF 60%);
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            -webkit-appearance: none;
+            border: 1px #CCC solid;
+            cursor: pointer;
+            height: 15px;
+            border-radius: 1.3px;
+        }
+
+        .section__sliderContainer input + input {
+            margin-top: 25px;
+        }
+
+        .section__subject {
+            border: 1px solid #CCC;
+            border-radius: 8px;
+            padding: 8px;
+            max-width: 320px;
+        }
+    </style>
+</head>
+<body>
+    <div class='main'>
+        <fieldset>
+            <legend>Select:</legend>
+            <label>
+                <input
+                    name='color'
+                    type='checkbox'
+                    checked
+                >
+                <span>
+                    text-color
+                </span>
+            </label>
+            <label>
+                <input
+                    name='backgroundColor'
+                    type='checkbox'
+                >
+                <span>background-color</span>
+            </label>
+        </fieldset>
+        <section class="section">
+            <div class="section__sliderContainer">
+                <input type="range" data-color='red' value="255" min="0" max="255">
+                <input type="range" data-color='green' value="255" min="0" max="255">
+                <input type="range" data-color='blue' value='255' min="0" max="255">
+            </div>
+            <div class="section__subject">
+                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Earum alias vero nesciunt animi ratione corrupti, maiores error vitae quam praesentium dignissimos harum! Nemo, consectetur. Harum libero accusamus dolores est perferendis.
+            </div>
+        </section>
+    </div>
+    <script>
+        $(document).ready(() => {
+            $('input[type=checkbox]').on('change', function() {
+                $('input[type=checkbox]').not(this).prop('checked', false);
+            });
+
+            const inputsRange = $('input[type=range]').get();
+
+            const subject = $('.section__subject')[0];
+
+            const changeColor = (e) => {
+                const valuePrecent = Math.floor((e.target.value / 255) * 100);
+                const color = e.target.dataset.color;
+                const checkbox = $('input[type=checkbox]').get().filter(el => el.checked)[0];
+                e.target.attributes.value.value = e.target.value;
+                e.target.style.background = `linear-gradient(90deg, ${color} ${valuePrecent}%, #FFF ${valuePrecent}%)`;
+                const colors = (inputsRange.map(el => {
+                    const value = el.attributes.value.value;
+                    return value
+                }));
+
+                subject.style[checkbox.name] = `rgb(${colors[0]}, ${colors[1]}, ${colors[2]})`
+            };
+
+            inputsRange.map(el => {
+                el.addEventListener('input', changeColor);
+            });
+        })
+    </script>
+</body>
+</html>
