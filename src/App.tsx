@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
 import { hot }                 from 'react-hot-loader/root';
 import styled                  from 'styled-components';
-import { useQuery }            from 'react-query';
+import {
+    useQuery,
+    useQueryClient
+} from 'react-query';
 
 import api                     from 'apiSingelton';
-import { IComments }           from './api/CommentsApi';
+import { IComments }           from '@api/CommentsApi';
 
 import Button                  from '@components/UI/Button';
 import MainLayout              from '@layouts/MainLayout';
@@ -27,6 +30,8 @@ const ButtonContainer = styled.footer`
 `;
 
 const App: React.FC = () => {
+    const queryClient = useQueryClient();
+
     const [pageState, setPageState] = useState({
         pageNumber : 0,
         findItem   : '',
@@ -45,6 +50,13 @@ const App: React.FC = () => {
         () => api.comments.loadComments(pageState.pageNumber),
         { keepPreviousData: true, staleTime: 5000, refetchInterval: false, refetchOnWindowFocus: false }
     );
+
+    useEffect(() => {
+        if (pageState.pageNumber < +data?.totalCount / 10 - 5) {
+            queryClient.prefetchQuery(['comments', pageState.pageNumber + 5],
+            () => api.comments.loadComments(pageState.pageNumber + 5),);
+        };
+    }, [data, pageState.pageNumber, queryClient]);
 
     const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPageState({

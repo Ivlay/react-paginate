@@ -10,6 +10,7 @@
 		"paths": {
 			"@/*": ["src/*"],
             "apiSingelton": ["apiSingelton.ts"],
+			"@api/*": ["src/api/*"],
 			"@components/*": ["src/components/*"],
 			"@layouts/*": ["src/layouts/*"],
 		},

@@ -42,7 +42,7 @@ const optimization = () => {
     const config = {
         minimize: !isDev,
         realContentHash: false,
-        runtimeChunk: 'single',
+        runtimeChunk: isDev ? { name: 'webpack' } : 'single',
         moduleIds: 'deterministic',
         splitChunks: isDev ? splitChunksConfigs.dev : splitChunksConfigs.prod
     };
@@ -88,6 +88,7 @@ module.exports = {
             'react-dom': '@hot-loader/react-dom',
             '@': path.resolve(__dirname, 'src'),
             'apiSingelton': path.resolve(__dirname, 'apiSingelton.ts'),
+            '@api': path.resolve(__dirname, 'src/api'),
             '@assets': path.resolve(__dirname, 'public/static/assets'),
             '@components': path.resolve(__dirname, 'src/components'),
             '@layouts': path.resolve(__dirname, 'src/layouts')

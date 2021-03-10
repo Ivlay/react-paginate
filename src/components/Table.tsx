@@ -1,6 +1,6 @@
 import styled        from 'styled-components';
 
-import { IComments } from '@/api/CommentsApi';
+import { IComments } from '@api/CommentsApi';
 import { useState }  from 'react';
 
 const TableStyle = styled.table`
@@ -50,7 +50,7 @@ const Table: React.FC<ITable> = ({ theadValue, data }) => {
         <TableStyle>
             <thead onClick={filterTableById}>
                 <tr>
-                    {Object.keys(theadValue).map(el => el !== 'postId' && <th key={el}>{el}</th>)}
+                    {(Object.keys(theadValue) as Array<keyof IComments>).map(el => el !== 'postId' && <th key={el}>{el}</th>)}
                 </tr>
             </thead>
             <tbody>

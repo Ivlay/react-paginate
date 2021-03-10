@@ -27,7 +27,7 @@ export default class ApiClient {
 
         const totalCount = resp.headers.get('x-total-count');
 
-        if (!resp.ok) throw new Error('Something wrong');
+        if (!resp.ok) throw new Error('Something went wrong');
 
         const parsedResp: T = await resp.json();
 

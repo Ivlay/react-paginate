@@ -1,4 +1,4 @@
-import { IComments } from '@/api/CommentsApi';
+import { IComments } from '@api/CommentsApi';
 import styled        from 'styled-components';
 
 const DropDownStyle = styled.div`
@@ -13,18 +13,18 @@ const DropDownStyle = styled.div`
 `;
 
 interface IDropDown {
-    items: IComments;
-    inputValue: string;
-    setFindItem: (item: string) => void;
+    items       : IComments;
+    inputValue  : string;
+    setFindItem : (item: string) => void;
 };
 
 const DropDown: React.FC<IDropDown> = ({ items, inputValue, setFindItem }) => {
     const handleItemClick = (e: React.MouseEvent<HTMLParagraphElement, MouseEvent>) => {
         setFindItem(e.currentTarget.innerText);
-    }
+    };
 
     const renderList = () => {
-        let renderSearchItem = Object.keys(items);
+        let renderSearchItem = Object.keys(items) as Array<keyof IComments>;
 
         if (inputValue) {
             renderSearchItem = renderSearchItem.filter((el) =>
@@ -32,7 +32,7 @@ const DropDown: React.FC<IDropDown> = ({ items, inputValue, setFindItem }) => {
                 .includes(inputValue.toLowerCase())
             );
         } else {
-            renderSearchItem = Object.keys(items);
+            renderSearchItem = Object.keys(items) as Array<keyof IComments>;
         };
 
         return renderSearchItem.map(el => el !=='postId' && (
