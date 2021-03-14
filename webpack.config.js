@@ -1,7 +1,9 @@
-const path                    = require('path');
-const HTMLWebpackPlugin       = require('html-webpack-plugin');
-const { CleanWebpackPlugin }  = require('clean-webpack-plugin');
-const TerserWebpackPlugin     = require('terser-webpack-plugin');
+const path                      = require('path');
+const webpack                   = require('webpack');
+const HTMLWebpackPlugin         = require('html-webpack-plugin');
+const { CleanWebpackPlugin }    = require('clean-webpack-plugin');
+const TerserWebpackPlugin       = require('terser-webpack-plugin');
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -15,16 +17,16 @@ const splitChunksConfigs = {
     prod: {
         chunks: 'all',
         cacheGroups: {
-            vendor: {
-                name: 'vendor',
-                test: /(?<!node_modules.*)[\\/]node_modules[\\/](react|react-dom|scheduler|prop-types|use-subscription)[\\/]/,
+            framework: {
+                chunks: 'all',
+                name: 'framework',
+                test: /[\\/]node_modules[\\/](react|react-dom|scheduler|prop-types|use-subscription)[\\/]/,
                 priority: 40,
-                enforce: true,
-                chunks: 'all'
+                enforce: true
             },
             styled: {
                 name: 'styledvendor',
-                test: /[\\/]node_modules[\\/](styled-components)[\\/]/,
+                test: /[\\/]node_modules[\\/](styled-components|@emotion)[\\/]/,
                 chunks: 'all'
             },
             query: {
@@ -85,7 +87,6 @@ module.exports = {
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.json', '.svg'],
         alias: {
-            'react-dom': '@hot-loader/react-dom',
             '@': path.resolve(__dirname, 'src'),
             'apiSingelton': path.resolve(__dirname, 'apiSingelton.ts'),
             '@api': path.resolve(__dirname, 'src/api'),
@@ -123,8 +124,10 @@ module.exports = {
                 removeComments: !isDev,
             }
         }),
+        isDev && new webpack.HotModuleReplacementPlugin(),
+        isDev && new ReactRefreshWebpackPlugin(),
         new CleanWebpackPlugin(),
-    ],
+    ].filter(Boolean),
 
     module: {
         rules: [
@@ -149,7 +152,7 @@ module.exports = {
                                 }],
                             ],
                             plugins: [
-                                'react-hot-loader/babel',
+                                isDev && require('react-refresh/babel'),
                                 '@babel/plugin-proposal-class-properties',
                                 ['babel-plugin-styled-components', {
                                     'pure': true,
@@ -158,7 +161,7 @@ module.exports = {
                                     'minify': !isDev,
                                     'transpileTemplateLiterals': isDev
                                 }]
-                            ],
+                            ].filter(Boolean),
                         }
                     }
                 ]

@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { hot }                 from 'react-hot-loader/root';
 import styled                  from 'styled-components';
 import {
     useQuery,
@@ -150,4 +149,4 @@ const App: React.FC = () => {
     );
 };
 
-export default hot(App);
+export default App;

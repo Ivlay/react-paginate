@@ -14,17 +14,17 @@ interface IResponseComments {
 };
 
 export default class CommentsApi {
-    private apiClient: ApiClient;
+    static apiClient: ApiClient;
 
     constructor(apiClient: ApiClient) {
-        this.apiClient = apiClient;
+        CommentsApi.apiClient = apiClient;
     };
     /**
      * Load 50 comments by default.
      * The total number of comments is passed to res header `x-total-count`
      */
-    loadComments = async (count = 5): Promise<IResponseComments> => {
-        return this.apiClient.get({
+    loadComments = async (count = 5): Promise<Readonly<IResponseComments>> => {
+        return CommentsApi.apiClient.get({
             requestURL: `comments?_start=${count ? count : ''}0&_limit=50`
         });
     };
